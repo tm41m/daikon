@@ -64,7 +64,7 @@ class ProductListingSchema(Schema):
 #         self.price = price
 
 #     def __repr__(self):
-#         return '<PricesTimeSeries(name={self.item_name!r})>'.format(self.self)
+#         return '<PricesTimeSeries(name={self.item_name!r})>'.format(self)
 
 
 # class PricesTimeSeries(Schema):
