@@ -1,6 +1,5 @@
-import datetime as dt
-
 from marshmallow import Schema, fields
+
 
 class ProductListing(object):
     def __init__(self,
@@ -17,7 +16,7 @@ class ProductListing(object):
                  version,
                  created_at,
                  updated_at):
-        
+
         self.id = id
         self.name = name
         self.product_id = product_id
@@ -31,9 +30,10 @@ class ProductListing(object):
         self.version = version
         self.created_at = created_at
         self.updated_at = updated_at
-    
+
     def __repr__(self):
         return '<ProductListing(name={self.name!r})>'.format(self=self)
+
 
 class ProductListingSchema(Schema):
 
@@ -57,12 +57,12 @@ class ProductListingSchema(Schema):
 #                  item_name,
 #                  item_id,
 #                  price):
-        
+
 #         self.dte = dte
 #         self.item_name = item_name
 #         self.item_id = item_id
 #         self.price = price
-    
+
 #     def __repr__(self):
 #         return '<PricesTimeSeries(name={self.item_name!r})>'.format(self.self)
 
