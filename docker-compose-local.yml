@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  postgres:
+    environment:
+      POSTGRES_USER: scopuli
+      POSTGRES_PASSWORD: scopuli
+      POSTGRES_DB: scopuli
+    image: postgres:12.14-alpine
+    restart: always
+    ports:
+      - "5433:5432"
+  api:
+    image: tm41m/daikon:0.1
+    environment:
+      SQLALCHEMY_DATABASE_URI: postgresql://scopuli:scopuli@postgres:5432/scopuli
+    depends_on:
+      - postgres
+    logging:
+      options:
+        max-size: 5m
+        max-file: "2"
+    volumes:
+      - .:/usr/src/daikon
+    ports:
+      - "5858:5858"

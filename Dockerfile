@@ -7,8 +7,13 @@ ENV PYTHONUNBUFFERED 1
 
 # install dependencies
 RUN pip install --upgrade pip
-COPY requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+
+RUN pip install Flask \
+    Flask-SQLAlchemy \
+    Flask-RESTful \
+    flask-marshmallow \
+    Flask-Caching \
+    psycopg2-binary
 
 COPY entrypoint.sh .
 COPY daikon ./daikon
