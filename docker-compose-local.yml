@@ -1,18 +1,33 @@
 version: '3.7'
 services:
+  nginx:
+    image: nginx:1.13.7
+    depends_on:
+      - api
+    networks:
+      - daikon-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - 80:80
   postgres:
     environment:
       POSTGRES_USER: scopuli
       POSTGRES_PASSWORD: scopuli
       POSTGRES_DB: scopuli
     image: postgres:12.14-alpine
+    networks:
+      daikon-network:
+        aliases:
+          - daikon-db
     restart: always
     ports:
       - "5433:5432"
   api:
     image: tm41m/daikon:0.1
+    command: gunicorn --bind 0.0.0.0:4000 wsgi:app
     environment:
-      SQLALCHEMY_DATABASE_URI: postgresql://scopuli:scopuli@postgres:5432/scopuli
+      SQLALCHEMY_DATABASE_URI: ${DAIKON_SQLALCHEMY_DATABASE_URI}
     depends_on:
       - postgres
     logging:
@@ -21,5 +36,9 @@ services:
         max-file: "2"
     volumes:
       - .:/usr/src/daikon
-    ports:
-      - "5858:5858"
+    networks:
+      daikon-network:
+        aliases:
+          - daikon-api
+networks:
+  daikon-network:

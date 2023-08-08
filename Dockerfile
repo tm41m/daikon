@@ -13,11 +13,8 @@ RUN pip install Flask \
     Flask-RESTful \
     flask-marshmallow \
     Flask-Caching \
-    psycopg2-binary
+    psycopg2-binary \
+    gunicorn
 
 COPY entrypoint.sh .
 COPY daikon ./daikon
-
-EXPOSE 5858
-
-ENTRYPOINT ["/usr/src/daikon/entrypoint.sh"]
