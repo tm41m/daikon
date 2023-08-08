@@ -1,14 +1,17 @@
 from flask import Flask, jsonify, request
+from flask_caching import Cache
 from daikon.model.product_metrics import db, ma, ProductMetrics, ProductMetricsSchema
 from daikon.auth import auth_required
 from datetime import datetime
-
 import os
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
 db.init_app(app)
 ma.init_app(app)
+
+cache = Cache(config={"DEBUG": True, "CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 604800})
+cache.init_app(app)
 
 
 @app.route("/stores/<int:id>", methods=["GET"])
@@ -23,7 +26,8 @@ def get_product_listings(id):
     pass
 
 
-@app.route("/v1/product-metrics/search", methods=["GET"])
+@app.route("/product-metrics/search", methods=["GET"])
+@cache.cached(timeout=604800, query_string=True)
 def get_product_metrics():
     query_params = request.args
 
