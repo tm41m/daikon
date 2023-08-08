@@ -16,6 +16,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "${DAIKON_FINGERPRINT}"
+            - "${DAIKON_PROD_FINGERPRINT}"
       - run:
           name: Set up SSH forwarding
           command: |
