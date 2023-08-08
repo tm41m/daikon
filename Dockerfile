@@ -10,14 +10,12 @@ RUN pip install --upgrade pip
 
 RUN pip install Flask \
     Flask-SQLAlchemy \
-    Flask-RESTful \
     flask-marshmallow \
+    marshmallow-sqlalchemy \
     Flask-Caching \
-    psycopg2-binary
+    Flask-Limiter \
+    psycopg2-binary \
+    gunicorn
 
 COPY entrypoint.sh .
 COPY daikon ./daikon
-
-EXPOSE 5858
-
-ENTRYPOINT ["/usr/src/daikon/entrypoint.sh"]

@@ -1,0 +1,64 @@
+version: 2.1
+
+jobs:
+  deploy:
+    docker:
+      - image: cimg/base:2023.06
+    parameters:
+      ssh:
+        type: string
+        default: "ssh -o StrictHostKeyChecking=no $DAIKON_SSH_USER@$DAIKON_SSH_HOST DAIKON_DIR=$DAIKON_DIR"
+      scp:
+        type: string
+        default: "scp -o StrictHostKeyChecking=no"
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "${DAIKON_FINGERPRINT}"
+      - run:
+          name: Set up SSH forwarding
+          command: |
+            echo "Host *" >> ~/.ssh/config
+            echo "  ForwardAgent yes" >> ~/.ssh/config
+            chmod 600 ~/.ssh/config
+      - run:
+          name: Add SSH forwarding
+          command: |
+            eval `ssh-agent -s` && ssh-add -k
+      - run:
+          name: Pull Latest Head of Environment branch
+          command: |
+            << parameters.ssh >> "cd $DAIKON_DIR/daikon && git checkout $DAIKON_ENV && git pull"
+      - run:
+          name: Set up server's environment variables
+          description: |
+            Sets up the server's environmnet variables. Avoid using ssh to source the variables in this step.
+            It can cause an exit 255 since the scp command precedes it.
+          command: |
+            echo "export DAIKON_PG_DBNAME=${DAIKON_PG_DBNAME}" >> .env
+            echo "export DAIKON_PG_HOSTNAME=${DAIKON_PG_HOSTNAME}" >> .env
+            echo "export DAIKON_PG_USERNAME=${DAIKON_PG_USERNAME}" >> .env
+            echo "export DAIKON_PG_PASSWORD=${DAIKON_PG_PASSWORD}" >> .env
+            echo "export DAIKON_PG_PORT=${DAIKON_PG_PORT}" >> .env
+            echo "export DAIKON_ENV=${DAIKON_ENV}" >> .env
+            echo "export DAIKON_DIR=${DAIKON_DIR}" >> .env
+            echo "export DAIKON_SQLALCHEMY_DATABASE_URI=${DAIKON_SQLALCHEMY_DATABASE_URI} >> .env"
+            << parameters.scp >> .env $DAIKON_SSH_USER@$DAIKON_SSH_HOST:/home/circleci/.env
+      - run:
+          name: Docker pull latest image
+          command: |
+            << parameters.ssh >> "docker image pull tm41m/daikon:0.1"
+      - run:
+          name: Compose a detached version of the container
+          command: |
+            << parameters.ssh >> "cd $DAIKON_DIR/daikon && source ../.env && docker compose -f docker-compose-$DAIKON_ENV.yml up -d"
+workflows:
+  deploy-to-prod:
+    jobs:
+      - deploy:
+          context:
+            - aethersphere-prod
+          filters:
+            branches:
+              only: prod
