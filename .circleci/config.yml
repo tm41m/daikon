@@ -44,7 +44,7 @@ jobs:
             echo "export DAIKON_PG_PORT=${DAIKON_PG_PORT}" >> .env
             echo "export DAIKON_ENV=${DAIKON_ENV}" >> .env
             echo "export DAIKON_DIR=${DAIKON_DIR}" >> .env
-            echo "export DAIKON_SQLALCHEMY_DATABASE_URI=${DAIKON_SQLALCHEMY_DATABASE_URI} >> .env"
+            echo "export DAIKON_SQLALCHEMY_DATABASE_URI=${DAIKON_SQLALCHEMY_DATABASE_URI}" >> .env
             << parameters.scp >> .env $DAIKON_SSH_USER@$DAIKON_SSH_HOST:/home/circleci/.env
       - run:
           name: Docker pull latest image
