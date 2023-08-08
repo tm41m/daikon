@@ -56,9 +56,9 @@ jobs:
 workflows:
   deploy-to-prod:
     jobs:
-      deploy:
-        context:
-          - aethersphere-prod
-        filters:
-          branches:
-            only: prod
+      - deploy:
+          context:
+            - aethersphere-prod
+          filters:
+            branches:
+              only: prod
