@@ -27,7 +27,7 @@ services:
     image: tm41m/daikon:0.1
     command: gunicorn --bind 0.0.0.0:4000 wsgi:app
     environment:
-      SQLALCHEMY_DATABASE_URI: ${DAIKON_SQLALCHEMY_DATABASE_URI}
+      DAIKON_SQLALCHEMY_DATABASE_URI: ${DAIKON_SQLALCHEMY_DATABASE_URI}
     depends_on:
       - postgres
     logging:
