@@ -10,8 +10,8 @@ RUN pip install --upgrade pip
 
 RUN pip install Flask \
     Flask-SQLAlchemy \
-    Flask-RESTful \
     flask-marshmallow \
+    marshmallow-sqlalchemy \
     Flask-Caching \
     psycopg2-binary \
     gunicorn

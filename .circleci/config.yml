@@ -1,0 +1,15 @@
+version: 2.1
+
+jobs:
+  deploy:
+    docker:
+
+workflows:
+  deploy-to-prod:
+    jobs:
+      deploy:
+        context:
+          - aethersphere-prod
+        filters:
+          branches:
+            only: main
