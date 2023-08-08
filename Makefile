@@ -10,3 +10,11 @@ seed-local-db-up: scripts/seed.sh
 	PG_DBNAME=${SCOPULI_LOCAL_PG_DBNAME} \
 	PG_PASSWORD=${SCOPULI_LOCAL_PG_PASSWORD} \
 	SEED_OPTION=up ENV=local scripts/seed.sh
+
+bootstrap-prod-remote: scripts/bootstrap.sh
+	export DAIKON_SSH_KEY=$(< "${DAIKON_SSH_KEY_FILEPATH}")
+	ssh -o StrictHostKeyChecking=no ${DAIKON_PROD_HOST} \
+		"export DAIKON_DIR=${DAIKON_DIR}; \
+		 export DAIKON_SSH_KEY=\"${DAIKON_SSH_KEY}\"; \
+		 export DAIKON_ENV=prod; \
+		 bash -s" < scripts/bootstrap.sh
