@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_caching import Cache
+from flask_cors import cross_origin
 from daikon.model.product_metrics import db, ma, ProductMetrics, ProductMetricsSchema
 from daikon.auth import auth_required
 from datetime import datetime
@@ -12,6 +13,8 @@ ma.init_app(app)
 
 cache = Cache(config={"DEBUG": True, "CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 604800})
 cache.init_app(app)
+
+whitelist_domains = ["https://*.static.observableusercontent.com"]
 
 
 @app.route("/stores/<int:id>", methods=["GET"])
@@ -28,6 +31,7 @@ def get_product_listings(id):
 
 @app.route("/product-metrics/search", methods=["GET"])
 @cache.cached(timeout=604800, query_string=True)
+@cross_origin(whitelist_domains)
 def get_product_metrics():
     query_params = request.args
 
