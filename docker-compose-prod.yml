@@ -16,11 +16,12 @@ services:
       - 443:443
   certbot:
     image: certbot/certbot
-    container_name: certbot
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email mike@tm41m.com -d api.tm41m.com --agree-tos
+    networks:
+      - daikon-network
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email michael.songhao.mei@gmail.com -d api.tm41m.com --agree-tos
   api:
     image: tm41m/daikon:0.1
     command: gunicorn --bind 0.0.0.0:4000 wsgi:app
