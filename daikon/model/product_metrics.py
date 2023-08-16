@@ -1,8 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-
-db = SQLAlchemy()
-ma = Marshmallow()
+from daikon.model import db, ma
 
 
 class ProductMetrics(db.Model):
