@@ -14,6 +14,7 @@ RUN pip install Flask \
     marshmallow-sqlalchemy \
     Flask-Caching \
     Flask-Limiter \
+    flask-cors \
     psycopg2-binary \
     gunicorn
 
