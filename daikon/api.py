@@ -50,12 +50,14 @@ def get_product_metrics():
         )
 
     region_code = query_params.get("region_code", None)
+    census_division_name = query_params.get("census_division_name", None)
     end_date = query_params.get("end_date", datetime.now().strftime("%Y-%m-%d"))
 
     product_metrics = (
         ProductMetrics.query.filter(ProductMetrics.product_id == product_id)
-        .filter(ProductMetrics.region_code == region_code)
-        .filter(ProductMetrics.calendar_date.between(start_date, end_date))
+            .filter(ProductMetrics.region_code == region_code)
+            .filter(ProductMetrics.census_division_name == census_division_name)
+            .filter(ProductMetrics.calendar_date.between(start_date, end_date))
     )
 
     res = product_metrics.all()
@@ -63,7 +65,7 @@ def get_product_metrics():
     output = schema.dump(res)
 
     return jsonify(output), 200
-
+    
 
 @app.route("/statcan-cpi-monthly/search", methods=["GET"])
 @cache.cached(timeout=604800, query_string=True)
