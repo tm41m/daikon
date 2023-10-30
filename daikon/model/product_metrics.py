@@ -26,6 +26,7 @@ class ProductMetricsSchema(ma.Schema):
         fields = (
             "calendar_date",
             "region_code",
+            "census_division_name",
             "product_id",
             "currency",
             "unit",
