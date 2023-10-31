@@ -56,16 +56,18 @@ def get_product_metrics():
     if (not census_division_name is None) and (region_code is None):
         return (
             jsonify(
-                {"error": "census_division_name cannot be passed without region_code, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"}
+                {
+                    "error": "census_division_name cannot be passed without region_code, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"
+                }
             ),
             400,
         )
-    
+
     product_metrics = (
         ProductMetrics.query.filter(ProductMetrics.product_id == product_id)
-            .filter(ProductMetrics.region_code == region_code)
-            .filter(ProductMetrics.census_division_name == census_division_name)
-            .filter(ProductMetrics.calendar_date.between(start_date, end_date))
+        .filter(ProductMetrics.region_code == region_code)
+        .filter(ProductMetrics.census_division_name == census_division_name)
+        .filter(ProductMetrics.calendar_date.between(start_date, end_date))
     )
 
     res = product_metrics.all()
@@ -73,7 +75,7 @@ def get_product_metrics():
     output = schema.dump(res)
 
     return jsonify(output), 200
-    
+
 
 @app.route("/statcan-cpi-monthly/search", methods=["GET"])
 @cache.cached(timeout=604800, query_string=True)
