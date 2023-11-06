@@ -7,6 +7,7 @@ class ProductMetrics(db.Model):
 
     calendar_date = db.Column(db.Date())
     region_code = db.Column(db.String())
+    census_division_name = db.Column(db.String())
     product_id = db.Column(db.Integer())
     currency = db.Column(db.String())
     unit = db.Column(db.String())
@@ -25,6 +26,7 @@ class ProductMetricsSchema(ma.Schema):
         fields = (
             "calendar_date",
             "region_code",
+            "census_division_name",
             "product_id",
             "currency",
             "unit",
