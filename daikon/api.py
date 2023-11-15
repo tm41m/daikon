@@ -50,11 +50,23 @@ def get_product_metrics():
         )
 
     region_code = query_params.get("region_code", None)
+    census_division_name = query_params.get("census_division_name", None)
     end_date = query_params.get("end_date", datetime.now().strftime("%Y-%m-%d"))
+
+    if (not census_division_name is None) and (region_code is None):
+        return (
+            jsonify(
+                {
+                    "error": "census_division_name cannot be passed without region_code, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"
+                }
+            ),
+            400,
+        )
 
     product_metrics = (
         ProductMetrics.query.filter(ProductMetrics.product_id == product_id)
         .filter(ProductMetrics.region_code == region_code)
+        .filter(ProductMetrics.census_division_name == census_division_name)
         .filter(ProductMetrics.calendar_date.between(start_date, end_date))
     )
 
