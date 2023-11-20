@@ -5,6 +5,7 @@ from daikon.model import db, ma
 from daikon.model.product_metrics import ProductMetrics, ProductMetricsSchema
 from daikon.model.statcan_food_prices import StatcanFoodPrices, StatcanFoodPricesSchema
 from daikon.model.statcan_cpi_monthly import StatcanCPIMonthly, StatcanCPIMonthlySchema
+from daikon.model.census_divisions import CensusDivisions, CensusDivisionsSchema
 from daikon.auth import auth_required
 from datetime import datetime
 import os
@@ -140,6 +141,29 @@ def get_statcan_food_prices():
 
     res = statcan_food_prices.all()
     schema = StatcanFoodPricesSchema(many=True)
+    output = schema.dump(res)
+
+    return jsonify(output), 200
+
+
+@app.route("/census-divisions/search", methods=["GET"])
+@cache.cached(timeout=604800, query_string=True)
+@cross_origin(whitelist_domains)
+def get_census_divisions():
+    query_params = request.args
+
+    region_code = query_params.get("region_code", None)
+    census_division_name = query_params.get("census_division_name", None)
+
+    if region_code is None:
+        census_divisions = CensusDivisions.query.all()
+    else:
+        census_divisions = CensusDivisions.query.filter(CensusDivisions.region_code == region_code).filter(
+            CensusDivisions.census_division_name == census_division_name
+        )
+
+    res = census_divisions.all()
+    schema = CensusDivisionsSchema(many=True)
     output = schema.dump(res)
 
     return jsonify(output), 200
