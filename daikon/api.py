@@ -164,11 +164,24 @@ def get_statcan_food_prices():
 def get_census_divisions():
     query_params = request.args
 
-    region_code = query_params.get("region_code", None)
+    try:
+        region_code = query_params["region_code"]
+    except KeyError:
+        return (
+            jsonify(
+                {
+                    "error": "Invalid query params, refer to https://tm41m.io/docs/daikon/census_divisions.html"
+                }
+            ),
+            400,
+        )
+
     name = query_params.get("name", None)
 
-    if region_code is None:
-        census_divisions = CensusDivisions.query.all()
+    if name is None:
+        census_divisions = CensusDivisions.query.filter(
+            CensusDivisions.region_code == region_code
+        )
     else:
         census_divisions = CensusDivisions.query.filter(
             CensusDivisions.region_code == region_code
