@@ -15,7 +15,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DAIKON_SQLALCHEMY_DATABA
 db.init_app(app)
 ma.init_app(app)
 
-cache = Cache(config={"DEBUG": True, "CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 604800})
+cache = Cache(
+    config={"DEBUG": True, "CACHE_TYPE": "SimpleCache", "CACHE_DEFAULT_TIMEOUT": 604800}
+)
 cache.init_app(app)
 
 whitelist_domains = ["https://*.static.observableusercontent.com"]
@@ -45,7 +47,9 @@ def get_product_metrics():
     except KeyError:
         return (
             jsonify(
-                {"error": "Invalid query params, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"}
+                {
+                    "error": "Invalid query params, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"
+                }
             ),
             400,
         )
@@ -89,7 +93,11 @@ def get_statcan_cpi_monthly():
         start_date = query_params["start_date"]
     except KeyError:
         return (
-            jsonify({"error": "Invalid query params, refer to https://tm41m.io/docs/daikon/statcan_cpi_monthly.html"}),
+            jsonify(
+                {
+                    "error": "Invalid query params, refer to https://tm41m.io/docs/daikon/statcan_cpi_monthly.html"
+                }
+            ),
             400,
         )
 
@@ -97,7 +105,9 @@ def get_statcan_cpi_monthly():
     end_date = query_params.get("end_date", datetime.now().strftime("%Y-%m-%d"))
 
     statcan_cpi_monthly = (
-        StatcanCPIMonthly.query.filter(StatcanCPIMonthly.component_name == component_name)
+        StatcanCPIMonthly.query.filter(
+            StatcanCPIMonthly.component_name == component_name
+        )
         .filter(StatcanCPIMonthly.region_code == region_code)
         .filter(StatcanCPIMonthly.calendar_date.between(start_date, end_date))
     )
@@ -123,7 +133,9 @@ def get_statcan_food_prices():
     except KeyError:
         return (
             jsonify(
-                {"error": "Invalid query params, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"}
+                {
+                    "error": "Invalid query params, refer to https://tm41m.io/docs/daikon/product_timeseries_metrics.html"
+                }
             ),
             400,
         )
@@ -153,14 +165,14 @@ def get_census_divisions():
     query_params = request.args
 
     region_code = query_params.get("region_code", None)
-    census_division_name = query_params.get("census_division_name", None)
+    name = query_params.get("name", None)
 
     if region_code is None:
         census_divisions = CensusDivisions.query.all()
     else:
-        census_divisions = CensusDivisions.query.filter(CensusDivisions.region_code == region_code).filter(
-            CensusDivisions.census_division_name == census_division_name
-        )
+        census_divisions = CensusDivisions.query.filter(
+            CensusDivisions.region_code == region_code
+        ).filter(CensusDivisions.name == name)
 
     res = census_divisions.all()
     schema = CensusDivisionsSchema(many=True)
